@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import config
 import my_email
 import time
+from datetime import datetime
 def contains_substring(str, substrs):
     str = str.lower()
     for substring in substrs:
@@ -10,11 +11,11 @@ def contains_substring(str, substrs):
             return True
     return False
     
-def get_ann(url, table_index):
+def get_ann(url, table_index, name):
     """
     Get the ANN list from bitcointalk.org
     """
-    print("Getting ANN list...")
+    print(f"{datetime.now()}: Getting {name} list...")
     response = requests.get(url)
     if response.status_code == 200:
         # use BeautifulSoup to parse the HTML
@@ -37,7 +38,7 @@ def get_ann(url, table_index):
             res_arr.append(data)
             if contains_substring(data['title'], config.keywords) and data['replies'] < config.reply_ceil and data['views'] < config.view_ceil:
                 my_email.send_email(data)
-                print(data)
+                print(f"{datetime.now()}: ", data)
             
     else :
         print(f"request failed, the status code is: {response.status_code}")
@@ -53,5 +54,5 @@ boards = [{
 }]
 
 for board in boards:
-    get_ann(board['url'], board['table_index'])
+    get_ann(board['url'], board['table_index'], board['name'])
     time.sleep(10)
