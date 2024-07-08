@@ -8,12 +8,12 @@ def send_email(data):
     if data['link'] in sent_links:
         return
     sender = email_config['sender']
-    receiver = email_config['receiver']
+    receivers = email_config['receivers']
     password = email_config['smtp_password']
 
     msg = MIMEMultipart()
     msg['From'] = email_config['sender']
-    msg['To'] = email_config['receiver']
+    msg['To'] = ', '.join(email_config['receivers'])
     msg['Subject'] = 'Bitcoin Talk New Forum Post'
 
     body = f"""
@@ -29,7 +29,7 @@ def send_email(data):
     server = smtplib.SMTP(email_config['smtp_server'], email_config['smtp_port'])
     server.login(sender, password)
     text = msg.as_string()
-    server.sendmail(sender, receiver, text)
+    server.sendmail(sender, receivers, text)
     server.quit()
     sent_links.append(data['link'])
     save_sent_links(sent_links)
