@@ -36,7 +36,8 @@ def get_ann(url, table_index, name):
             data['views'] = int(cols[5].text.replace('\n', '').replace('\t', '').replace('\r', '').strip())
             data['last_post'] = cols[6].text.replace('\n', '').replace('\t', '').replace('\r', '').strip()
             res_arr.append(data)
-            if contains_substring(data['title'], config.keywords) and data['replies'] < config.reply_ceil and data['views'] < config.view_ceil:
+            # contains_substring(data['title'], config.keywords) and
+            if data['replies'] < config.reply_ceil and data['views'] < config.view_ceil:
                 my_email.send_email(data)
                 print(f"{datetime.now()}: ", data)
             
